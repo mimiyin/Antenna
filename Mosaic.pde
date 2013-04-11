@@ -1,4 +1,5 @@
 import java.net.URLEncoder;
+import java.util.*;
 import processing.video.*;
 
 // Camera object
@@ -17,6 +18,10 @@ int rows = 10;
 int cellWidth;
 int cellHeight;
 
+boolean isGhosting = false;
+boolean isBlobbing = false;
+boolean isMoving = false;
+
 
 
 void setup() {
@@ -28,7 +33,7 @@ void setup() {
 
   bg = new Background();
   fg = new Foreground();
-  
+
   colorMode(HSB, 255);
 }
 
@@ -37,8 +42,22 @@ void draw() {
   background(0);
   video.run();
   bg.run();
-  //fg.run();
+  fg.run();
+  
+  
 }
 
-
+void keyPressed() {
+  switch(key) {
+  case 'g':
+    isGhosting = !isGhosting; 
+    break;
+  case 'b':  
+    isBlobbing = !isBlobbing; 
+     break;
+  case 'm':
+    isMoving = !isMoving;
+     break;
+  }
+}
 

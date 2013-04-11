@@ -9,13 +9,14 @@ class Image {
     y = int(index/rows)*cellHeight;
     img = _img;
     b = analyze(img);
-    decay = 255;
+    decay = random(50, 150);
     //println("Brightness: " + b);
   }
 
   // When the frameRate is high, image decays too quickly
-  void decay() {
+  float decay() {
     decay-= 10/frameRate;
+    return decay;
   }  
 
   void update(int _index) {
@@ -23,22 +24,22 @@ class Image {
     x = int(index%cols)*cellWidth;
     y = int(index/rows)*cellHeight;
   }
-
-  int getIndex() {
-    return index;   
-  }
   
   void display() {
-    tint(255, decay);
+    //tint(255, decay);
     image(img, x, y, cellWidth, cellHeight);
   }
-
-  float getBrightness() {
-    return b;
+  
+  int getIndex() {
+    return index;   
   }
 
   PImage getImage() {
     return img;
+  }
+  
+  float getBrightness() {
+    return b;
   }
 
   boolean isDead() {

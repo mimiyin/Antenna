@@ -11,6 +11,8 @@ class Background {
   Background() {
     if (isLocal) {
       
+      // Load images
+      // There are only 25 right now, so there will be repeats
       for (int i = 0; i < images.length; i++) {
         int imgI = i%25;
         images[i] = new Image(i, loadImage(imgI + ".jpg"));
@@ -25,10 +27,6 @@ class Background {
 
   // Create abstract images from video footage
   void run() {
-    display();
-  }
-
-  void display() {
     int y, x;
     boolean isSnapshot = false;
     if (frameCount%300 == 0 && transferred.size() >= current.size()) {
@@ -39,33 +37,38 @@ class Background {
       y = row*cellHeight;
       for (int col = 0; col < cols; col++) {
         x = col*cellWidth;
-
-        float bVideo = analyze(video.get(x, y, true));
+        
+        // Calculate index number for this cell
+        int index = (row*cols)+col;
+        
+        // Get the brightness of this cell
+        float bVideo = analyze(video.getCell(x, y, true));
 
         // Take another snapshot if the next array is empty
         if (isSnapshot)
           takeSnapshot(col, row, x, y, bVideo);
 
-
-        int index = (row*cols)+col;
-
         // Once in a while, transfer an index if it hasn't been transferred
         float rand = random(1);
-        if ( rand > .99 && !transferred(index)) {
+        if ( rand > .99 && !isTransferred(index)) {
           transferred.add(index);
           current.set(index, new Image(index, next.get(index).img));
           //println("TRANSFERRING!!! " + index + "\t" + current.get(index).index);
         }
-        //println("INDEX: " + index + "\t" + thisImage.getIndex()); 
+        
+        // Display image for this cell
         current.get(index).display();
-
-        mirror(index, x, y, bVideo);
+        
+        if(isGhosting)
+          // Show ghosting effect of live video stream
+          ghost(index, x, y, bVideo);
 
       }
     }
   }
-
-  boolean transferred(int index) {
+  
+  // Has the image been transferred already?  
+  boolean isTransferred(int index) {
     for (Integer i : transferred) {
       if (index == i)
         return true;
@@ -73,17 +76,18 @@ class Background {
 
     return false;
   }
-
-  void mirror(int index, int x, int y, float b) {
+  
+  // Ghosting effect
+  void ghost(int index, int x, int y, float b) {
     fill(b, 127-b);
     noStroke();
     rect(x, y, cellWidth, cellHeight);
-//    if(b<100)
-//      image(fg.images[index].img, x, y, cellWidth, cellHeight);
-  }
 
+  }
+  
+  // Create a new b&w "Knoll" mosaic of video stream
   public void takeSnapshot(int col, int row, int x, int y, float bVideo) {
-    //println("SNAPSHOT!!! " + frameCount);
+    println("TAKING SNAPSHOT!!! " + frameCount);
 
     float smallestDiff=255;
     Image theOne = images[0];

@@ -26,7 +26,6 @@ class Video {
 
   void run() {
     load();
-    //track();
   }
 
   void load() {
@@ -40,44 +39,7 @@ class Video {
     }
   }
 
-  void track() {
-
-    capture.loadPixels();
-    prevFrame.loadPixels();
-
-    // Begin loop to walk through every pixel
-    for (int x = 0; x < capture.width; x ++ ) {
-      for (int y = 0; y < capture.height; y ++ ) {
-
-        int loc = x + y*capture.width;            // Step 1, what is the 1D pixel location
-        color current = capture.pixels[loc];      // Step 2, what is the current color
-        color previous = prevFrame.pixels[loc]; // Step 3, what is the previous color
-
-        // Step 4, compare colors (previous vs. current)
-        float r1 = red(current); 
-        float g1 = green(current); 
-        float b1 = blue(current);
-        float r2 = red(previous); 
-        float g2 = green(previous); 
-        float b2 = blue(previous);
-        float diff = dist(r1, g1, b1, r2, g2, b2);
-
-        // Step 5, How different are the colors?
-        // If the color at that pixel has changed, then there is motion at that pixel.
-        //        if (diff > threshold) { 
-        //          // If motion, display black
-        //          pixels[loc] = color(0);
-        //        } 
-        //        else {
-        //          // If not, display white
-        //          pixels[loc] = color(255);
-        //        }
-      }
-    }
-    //updatePixels();
-  }
-
-  PImage get(int x, int y, boolean isCurrent) {
+  PImage getCell(int x, int y, boolean isCurrent) {
     if(isCurrent)
       return capture.get(int(scale*width-(scale*(x+cellWidth))), int(scale*y), int(scale*cellWidth), int(scale*cellHeight));
     else
