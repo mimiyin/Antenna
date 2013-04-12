@@ -14,7 +14,7 @@ Background bg;
 Foreground fg;
 
 int cols = 10;
-int rows = 10;
+int rows = 6;
 int cellWidth;
 int cellHeight;
 
@@ -39,7 +39,7 @@ void setup() {
 
 void draw() {
   println(frameRate);
-  background(0);
+  //background(0);
   video.run();
   bg.run();
   fg.run();

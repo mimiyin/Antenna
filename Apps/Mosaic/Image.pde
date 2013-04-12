@@ -6,8 +6,8 @@ class Image {
   Image(int _index, PImage _img) {
     index = _index;
     x = int(index%cols)*cellWidth;
-    y = int(index/rows)*cellHeight;
-    img = _img;
+    y = int(index/cols)*cellHeight;
+    img = _img;    
     b = analyze(img);
     decay = random(50, 150);
     //println("Brightness: " + b);
