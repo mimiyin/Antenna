@@ -28,7 +28,8 @@ class Foreground {
           float bVideo = analyze(video.getCell(x, y, true));
           blob(index, x, y, bVideo);
         }
-        else if(isMoving) {
+        
+        if(isMoving) {
           float diff = diff(video.getCell(x, y, true), video.getCell(x, y, false));
           //println("DIFF: " + diff);
   

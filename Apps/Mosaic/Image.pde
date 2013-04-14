@@ -9,8 +9,7 @@ class Image {
     y = int(index/cols)*cellHeight;
     img = _img;    
     b = analyze(img);
-    decay = random(50, 150);
-    //println("Brightness: " + b);
+    decay = random(50, 100);
   }
 
   // When the frameRate is high, image decays too quickly

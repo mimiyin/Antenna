@@ -35,7 +35,8 @@ class Textground {
           
         if (isBlobbing)
           blob(index, x, y, bVideo, interval);
-        else if (isMoving) {
+          
+        if (isMoving) {
           float diff = diff(video.getCell(x, y, true), video.getCell(x, y, false));
           //println("DIFF: " + diff);
 

@@ -13,8 +13,8 @@ Background bg;
 // Foreground object
 Foreground fg;
 
-int cols = 10;
-int rows = 6;
+int cols;
+int rows;
 int cellWidth;
 int cellHeight;
 
@@ -22,42 +22,73 @@ boolean isGhosting = false;
 boolean isBlobbing = false;
 boolean isMoving = false;
 
-
+float fCounter = 0;
+PFont font;
 
 void setup() {
-  size(1280, 768);
+  size(1920, 1080);
   video = new Video(this);
 
-  cellWidth = (int) width/cols;
-  cellHeight = (int) height/rows;
+  cellWidth = 120;
+  cellHeight = 120;
+
+  cols = int(width/cellWidth);
+  rows = int(height/cellHeight);
 
   bg = new Background();
   fg = new Foreground();
 
+  font = loadFont("Helvetica-Bold-48.vlw");
   colorMode(HSB, 255);
 }
 
 void draw() {
   println(frameRate);
-  //background(0);
   video.run();
   bg.run();
   fg.run();
-  
-  
+  if (fCounter > 0)
+    feedback();
+}
+
+void feedback() {
+  String [] messages = {
+    "blob: " + isBlobbing, 
+    "move: " + isMoving, 
+    "ghost: " + isGhosting,
+  };
+
+  noStroke();
+  fill(255, 200, 200, fCounter);
+  rect(0, 0, 150, messages.length*25);
+
+  for (int m = 0; m < messages.length; m++) { 
+    fill(255, fCounter);    
+    textFont(font); 
+    textSize(17); 
+    text(messages[m], 20, (m*20 + 20));
+  }  
+
+  fCounter -= .25;
 }
 
 void keyPressed() {
+  fCounter = 255;
+
   switch(key) {
   case 'g':
     isGhosting = !isGhosting; 
     break;
   case 'b':  
     isBlobbing = !isBlobbing; 
-     break;
+    if (isBlobbing)
+      isMoving = false;
+    break;
   case 'm':
     isMoving = !isMoving;
-     break;
+    if (isMoving)
+      isBlobbing = false;
+    break;
   }
 }
 

@@ -47,7 +47,7 @@ void setup() {
   font = loadFont("Helvetica-Bold-48.vlw");
 
   colorMode(HSB, 255);
-  
+
   smooth();
 }
 
@@ -55,26 +55,30 @@ void draw() {
   println(frameRate);
   video.run();
   tg.run();
-  
-  if(fCounter > 0)
+
+  if (fCounter > 0)
     feedback();
 }
 
 void feedback() {
-  fill(255, 200, 200, fCounter);
-  rect(0, 0, 150, 100);
   String [] messages = {
     "blob: " + isBlobbing, 
     "move: " + isMoving, 
     "fade: " + isFading, 
     "unison: " + isUnison,
   };
-  
+
+  noStroke();
+  fill(255, 200, 200, fCounter);
+  rect(0, 0, 150, messages.length*33);
+
   for (int m = 0; m < messages.length; m++) { 
     fill(255, fCounter);    
     textSize(17);  
     text(messages[m], 20, (m*20 + 20));
-  }  
+  }
+
+  fCounter -= .25;
 }
 
 void keyPressed() {
@@ -88,6 +92,8 @@ void keyPressed() {
     break;
   case 'm':
     isMoving = !isMoving;
+    if (isMoving)
+      isBlobbing = false;
     break;
   case 'f':
     isFading = !isFading;
