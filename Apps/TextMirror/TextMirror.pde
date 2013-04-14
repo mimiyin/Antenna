@@ -18,7 +18,7 @@ boolean isGhosting = false;
 boolean isBlobbing = false;
 boolean isMoving = false;
 boolean isFading = false;
-boolean isUnison = true;
+boolean isUnison = false;
 
 // Rate of change for cycling through words
 float speed = 1;
@@ -62,22 +62,19 @@ void draw() {
 
 void feedback() {
   fill(255, 200, 200, fCounter);
-  rect(0, 0, 150, 150);
+  rect(0, 0, 150, 100);
   String [] messages = {
     "blob: " + isBlobbing, 
     "move: " + isMoving, 
     "fade: " + isFading, 
     "unison: " + isUnison,
-    "decay-rate: " + speed,
-    "font-size: " + fSize,
   };
+  
   for (int m = 0; m < messages.length; m++) { 
     fill(255, fCounter);    
     textSize(17);  
     text(messages[m], 20, (m*20 + 20));
-  }
-  
-  fCounter-=.25;
+  }  
 }
 
 void keyPressed() {
