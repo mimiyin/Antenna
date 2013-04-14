@@ -28,6 +28,8 @@ float fSize = 36;
 
 PFont font;
 
+// Feedback counter
+float fCounter;
 
 
 
@@ -45,15 +47,42 @@ void setup() {
   font = loadFont("Helvetica-Bold-48.vlw");
 
   colorMode(HSB, 255);
+  
+  smooth();
 }
 
 void draw() {
   println(frameRate);
   video.run();
   tg.run();
+  
+  if(fCounter > 0)
+    feedback();
+}
+
+void feedback() {
+  fill(255, 200, 200, fCounter);
+  rect(0, 0, 150, 150);
+  String [] messages = {
+    "blob: " + isBlobbing, 
+    "move: " + isMoving, 
+    "fade: " + isFading, 
+    "unison: " + isUnison,
+    "decay-rate: " + speed,
+    "font-size: " + fSize,
+  };
+  for (int m = 0; m < messages.length; m++) { 
+    fill(255, fCounter);    
+    textSize(17);  
+    text(messages[m], 20, (m*20 + 20));
+  }
+  
+  fCounter-=.25;
 }
 
 void keyPressed() {
+  fCounter = 255;
+
   switch(key) {
   case 'b':  
     isBlobbing = !isBlobbing; 
@@ -62,8 +91,6 @@ void keyPressed() {
     break;
   case 'm':
     isMoving = !isMoving;
-    if (isMoving)
-      isBlobbing = false;
     break;
   case 'f':
     isFading = !isFading;
