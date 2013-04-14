@@ -33,7 +33,7 @@ class Foreground {
           //println("DIFF: " + diff);
   
           if (frameCount > 5 && diff > 5000) {
-            after.add(images[index]);
+            after.add(new Image(index, images[index].img));
           }
         }
       }
