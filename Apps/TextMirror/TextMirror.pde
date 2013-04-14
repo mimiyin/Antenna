@@ -18,13 +18,13 @@ boolean isGhosting = false;
 boolean isBlobbing = false;
 boolean isMoving = false;
 boolean isFading = false;
-boolean isUnison = false;
+boolean isUnison = true;
 
 // Rate of change for cycling through words
 float speed = 1;
 
 // Font-size
-float fSize = 36;
+float fSize = 48;
 
 PFont font;
 
@@ -34,13 +34,14 @@ float fCounter;
 
 
 void setup() {
-  size(1280, 720);
-  cols = int(width/210);
-  rows = int(height/45);
+  size(1920, 1080);
+  cellWidth = 320;
+  cellHeight = 67;
+
+  cols = int(width/cellWidth);
+  rows = int(height/cellHeight);
   video = new Video(this);
 
-  cellWidth = (int) width/cols;
-  cellHeight = (int) height/rows;
 
   tg = new Textground();
 
@@ -70,7 +71,7 @@ void feedback() {
 
   noStroke();
   fill(255, 200, 200, fCounter);
-  rect(0, 0, 150, messages.length*33);
+  rect(0, 0, 150, messages.length*25);
 
   for (int m = 0; m < messages.length; m++) { 
     fill(255, fCounter);    
