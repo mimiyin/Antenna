@@ -16,7 +16,7 @@ float diff(PImage current, PImage prev) {
   current.loadPixels();
   prev.loadPixels();
   float diffRGB = 0;
-  
+
   for (int i = 0; i < current.pixels.length; i++) {
     color currentRGB = current.pixels[i];
     color prevRGB = prev.pixels[i];
@@ -28,7 +28,7 @@ float diff(PImage current, PImage prev) {
     float b2 = blue(prevRGB);
     diffRGB += dist(r1, g1, b1, r2, g2, b2);
   }
-  
+
   return diffRGB;
 }
 

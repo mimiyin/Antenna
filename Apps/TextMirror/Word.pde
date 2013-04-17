@@ -3,23 +3,22 @@ class Word {
   String word;
   float decay;
   boolean isBlob;
+  float [] randomColor = new float [3];
 
   Word(int _index, String _word, boolean _isBlob) {
     index = _index;
     word = _word;
     isBlob = _isBlob;
-    
+
     x = int(index%cols)*cellWidth;
     y = int(index/cols)*cellHeight;
 
-    decay = 255;
+    decay = dRate;
   }
 
   // When the frameRate is high, image decays too quickly
-  float decay() {
-    decay-= 100/frameRate;
-    //println("DECAY: " + decay);
-    return decay;
+  void decay() {
+    decay--;
   }
 
   void recay() {
@@ -31,6 +30,10 @@ class Word {
     word = _word;
   }
 
+  void randomizeColor() {
+    randomColor = colors[int(random(colors.length))].getColor();
+  }
+
   void display() {
     textAlign(LEFT, CENTER);
     noStroke();
@@ -38,16 +41,23 @@ class Word {
     rect(x, y, cellWidth, cellHeight);
     textFont(font);
     textSize(fSize);
-    if (isBlob)
-      fill(0, 255, 255, decay);
+
+    float alpha = 255;
+
+    if (isFading)
+      alpha = decay;
+
+    if (isBlob) {
+      fill(randomColor[0], randomColor[1], randomColor[2], alpha);
+    }
     else
-      fill(0, decay);
+      fill(0, alpha);
     text(word, x + 15, y+cellHeight/2);
   }
 
   boolean isDead() {
-    if (decay < random(-3000, 0)) { 
-      decay = 255;
+    if (decay < random(-120*dRate, 0)) { 
+      decay = dRate;
       return true;
     }
     else

@@ -31,10 +31,25 @@ PFont font;
 // Feedback counter
 float fCounter;
 
+// Decay rate
+float dRate = 255;
 
+
+String [] colorStrings;
+Color [] colors;
 
 void setup() {
   size(1920, 1080);
+  
+  colorStrings = loadStrings("colors.txt");
+  colors = new Color [colorStrings.length];
+
+
+  for (int i = 0; i < colorStrings.length; i++) {
+    String [] rgb = colorStrings[i].split(","); 
+    colors[i] = new Color(int(rgb[0]), int(rgb[1]), int(rgb[2]));
+  }
+
   cellWidth = 320;
   cellHeight = 67;
 
@@ -42,18 +57,15 @@ void setup() {
   rows = int(height/cellHeight);
   video = new Video(this);
 
-
   tg = new Textground();
 
   font = loadFont("Helvetica-Bold-48.vlw");
-
-  colorMode(HSB, 255);
 
   smooth();
 }
 
 void draw() {
-  println(frameRate);
+  //println(frameRate);
   video.run();
   tg.run();
 
@@ -66,7 +78,8 @@ void feedback() {
     "blob: " + isBlobbing, 
     "move: " + isMoving, 
     "fade: " + isFading, 
-    "unison: " + isUnison,
+    "unison: " + isUnison, 
+    "decay: " + dRate,
   };
 
   noStroke();
@@ -84,26 +97,6 @@ void feedback() {
 
 void keyPressed() {
   fCounter = 255;
-
-  switch(key) {
-  case 'b':  
-    isBlobbing = !isBlobbing; 
-    if (isBlobbing)
-      isMoving = false;
-    break;
-  case 'm':
-    isMoving = !isMoving;
-    if (isMoving)
-      isBlobbing = false;
-    break;
-  case 'f':
-    isFading = !isFading;
-    break;
-  case 'u':
-    isUnison = !isUnison;
-    break;
-  }
-
   if (key == CODED) {
 
     switch(keyCode) {
@@ -114,10 +107,30 @@ void keyPressed() {
       speed += .1;
       break;
     case RIGHT:
-      fSize += 1;
+      dRate += 1;
       break;
     case LEFT:
-      fSize -= 1;
+      dRate -= 1;
+      break;
+    }
+  }
+  else {
+    switch(key) {
+    case 'b':  
+      isBlobbing = !isBlobbing; 
+      if (isBlobbing)
+        isMoving = false;
+      break;
+    case 'm':
+      isMoving = !isMoving;
+      if (isMoving)
+        isBlobbing = false;
+      break;
+    case 'f':
+      isFading = !isFading;
+      break;
+    case 'u':
+      isUnison = !isUnison;
       break;
     }
   }
