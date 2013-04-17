@@ -25,6 +25,8 @@ boolean isMoving = false;
 float fCounter = 0;
 PFont font;
 
+float dRate = 1;
+
 void setup() {
   size(1920, 1080);
   video = new Video(this);
@@ -56,6 +58,7 @@ void feedback() {
     "blob: " + isBlobbing, 
     "move: " + isMoving, 
     "ghost: " + isGhosting,
+    "decay: " + dRate,
   };
 
   noStroke();
@@ -75,20 +78,33 @@ void feedback() {
 void keyPressed() {
   fCounter = 255;
 
-  switch(key) {
-  case 'g':
-    isGhosting = !isGhosting; 
-    break;
-  case 'b':  
-    isBlobbing = !isBlobbing; 
-    if (isBlobbing)
-      isMoving = false;
-    break;
-  case 'm':
-    isMoving = !isMoving;
-    if (isMoving)
-      isBlobbing = false;
-    break;
+  if (key == CODED) {
+    switch(keyCode) {
+    case UP:
+      dRate += 1;
+      break;
+    case DOWN:
+      dRate -= 1;
+      break;
+    }
+  }
+  else {
+
+    switch(key) {
+    case 'g':
+      isGhosting = !isGhosting; 
+      break;
+    case 'b':  
+      isBlobbing = !isBlobbing; 
+      if (isBlobbing)
+        isMoving = false;
+      break;
+    case 'm':
+      isMoving = !isMoving;
+      if (isMoving)
+        isBlobbing = false;
+      break;
+    }
   }
 }
 
