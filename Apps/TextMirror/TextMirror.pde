@@ -9,11 +9,12 @@ Capture capture;
 Video video;
 
 // Textground object
-Textground tg;
+Textscape tg;
 
 int cols, rows;
 int cellWidth, cellHeight;
 
+// Effects
 boolean isGhosting = false;
 boolean isBlobbing = false;
 boolean isMoving = false;
@@ -21,30 +22,31 @@ boolean isFading = false;
 boolean isUnison = true;
 
 // Rate of change for cycling through words
-float speed = 1;
+int speed = 1;
 
 // Font-size
 float fSize = 48;
 
+// Decay rate
+float dRate = 255;
+
+// Font
 PFont font;
+
+// Color palette
+String [] colorStrings;
+Color [] colors;
 
 // Feedback counter
 float fCounter;
 
-// Decay rate
-float dRate = 255;
-
-
-String [] colorStrings;
-Color [] colors;
-
 void setup() {
   size(1920, 1080);
   
+  // Load color palette
   colorStrings = loadStrings("colors.txt");
   colors = new Color [colorStrings.length];
-
-
+  
   for (int i = 0; i < colorStrings.length; i++) {
     String [] rgb = colorStrings[i].split(","); 
     colors[i] = new Color(int(rgb[0]), int(rgb[1]), int(rgb[2]));
@@ -57,10 +59,11 @@ void setup() {
   rows = int(height/cellHeight);
   video = new Video(this);
 
-  tg = new Textground();
-
+  // Create textscape
+  tg = new Textscape();
+  
+  // Load font
   font = loadFont("Helvetica-Bold-48.vlw");
-
   smooth();
 }
 
@@ -75,16 +78,17 @@ void draw() {
 
 void feedback() {
   String [] messages = {
-    "blob: " + isBlobbing, 
-    "move: " + isMoving, 
-    "fade: " + isFading, 
-    "unison: " + isUnison, 
-    "decay: " + dRate,
+    "[b]lob: " + isBlobbing, 
+    "[m]ove: " + isMoving, 
+    "[f]ade: " + isFading, 
+    "[u]nison: " + isUnison, 
+    "[u-d]speed: " + 1000/speed,
+    "[l-r]decay: " + dRate,
   };
 
   noStroke();
   fill(255, 200, 200, fCounter);
-  rect(0, 0, 150, messages.length*25);
+  rect(0, 0, 180, messages.length*25);
 
   for (int m = 0; m < messages.length; m++) { 
     fill(255, fCounter);    
@@ -92,7 +96,7 @@ void feedback() {
     text(messages[m], 20, (m*20 + 20));
   }
 
-  fCounter -= .25;
+  fCounter -=.25;
 }
 
 void keyPressed() {
@@ -101,10 +105,12 @@ void keyPressed() {
 
     switch(keyCode) {
     case UP:
-      speed -= .1;
+      speed --;
+      speed = constrain(speed, 1, 100);
       break;
     case DOWN:
-      speed += .1;
+      speed ++;
+      speed = constrain(speed, 1, 100);
       break;
     case RIGHT:
       dRate += 1;

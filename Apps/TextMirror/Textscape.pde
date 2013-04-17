@@ -1,9 +1,9 @@
-class Textground {
+class Textscape {
   Word [] words = new Word[cols*rows];
   ArrayList<Word>after = new ArrayList<Word>();
   String [] text = new String [40];
 
-  Textground() {
+  Textscape() {
     text = loadStrings("words.txt");
     for (int w = 0; w < words.length; w++) {
       int wIndex = int(w%text.length);
@@ -20,7 +20,7 @@ class Textground {
 
   void track() {
     int y, x;
-    int interval = int(30*speed); 
+    int interval = speed; 
 
     for (int row = 0; row < rows; row++) {
       y = row*cellHeight;
@@ -55,8 +55,6 @@ class Textground {
       thisWord.isBlob = true;
       if (isFading)
         thisWord.decay();
-
-      interval = constrain(interval, 1, 300);
 
       if (frameCount%interval == 0) {
         thisWord.randomizeColor();
