@@ -1,5 +1,15 @@
 import java.net.URLEncoder;
 import java.util.*;
+import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
+
+//Key event utils
+Toolkit t = Toolkit.getDefaultToolkit();
+boolean isCapsLocked() {
+  return t.getLockingKeyState(KeyEvent.VK_CAPS_LOCK);
+}
+
+
 import processing.video.*;
 
 // Camera object
@@ -9,10 +19,14 @@ Capture capture;
 Video video;
 
 // Textground object
-Textscape tg;
+Textscape ts;
 
-int cols, rows;
+// Total number of cells
+int numCells;
+int cols = 6;
+int rows = 16;
 int cellWidth, cellHeight;
+
 
 // Effects
 boolean isGhosting = false;
@@ -20,6 +34,7 @@ boolean isBlobbing = false;
 boolean isMoving = false;
 boolean isFading = false;
 boolean isUnison = true;
+
 
 // Rate of change for cycling through words
 int speed = 1;
@@ -29,6 +44,9 @@ float fSize = 48;
 
 // Decay rate
 float dRate = 255;
+
+// Kerning
+int kern = 4;
 
 // Font
 PFont font;
@@ -40,37 +58,47 @@ Color [] colors;
 // Feedback counter
 float fCounter;
 
+
 void setup() {
   size(1920, 1080);
-  
+  //size(1280, 720);
+
   // Load color palette
   colorStrings = loadStrings("colors.txt");
   colors = new Color [colorStrings.length];
-  
+
   for (int i = 0; i < colorStrings.length; i++) {
     String [] rgb = colorStrings[i].split(","); 
     colors[i] = new Color(int(rgb[0]), int(rgb[1]), int(rgb[2]));
   }
 
-  cellWidth = 320;
-  cellHeight = 67;
+  // Init cell calculations
+  initCells();
 
-  cols = int(width/cellWidth);
-  rows = int(height/cellHeight);
   video = new Video(this);
 
-  // Create textscape
-  tg = new Textscape();
-  
   // Load font
   font = loadFont("Helvetica-Bold-48.vlw");
   smooth();
 }
 
+
+void initCells() {
+  cols = constrain(cols, 1, 100);
+  rows = constrain(rows, 1, 100);
+
+  numCells = cols*rows;
+  cellWidth = int(width/cols);
+  cellHeight = int(height/rows);
+
+  // Create textscape
+  ts = new Textscape();
+}
+
 void draw() {
   //println(frameRate);
   video.run();
-  tg.run();
+  ts.run();
 
   if (fCounter > 0)
     feedback();
@@ -78,17 +106,23 @@ void draw() {
 
 void feedback() {
   String [] messages = {
-    "[b]lob: " + isBlobbing, 
-    "[m]ove: " + isMoving, 
-    "[f]ade: " + isFading, 
-    "[u]nison: " + isUnison, 
-    "[u-d]speed: " + 1000/speed,
-    "[l-r]decay: " + dRate,
+    "(b)lob: " + isBlobbing, 
+    "(m)ove: " + isMoving, 
+    "(f)ade: " + isFading, 
+    "(u)nison: " + isUnison, 
+    "(u-d)speed: " + 1000/speed, 
+    "(l-r)decay: " + dRate, 
+    "([-])font: " + fSize, 
+    "(j-k)kern: " + kern,
+    " ", 
+    "CAPS LOCK:",
+    "(l-r)cols: " + cols, 
+    "(u-d)rows: " + rows,
   };
 
   noStroke();
   fill(255, 200, 200, fCounter);
-  rect(0, 0, 180, messages.length*25);
+  rect(0, 0, 180, messages.length*22);
 
   for (int m = 0; m < messages.length; m++) { 
     fill(255, fCounter);    
@@ -101,8 +135,25 @@ void feedback() {
 
 void keyPressed() {
   fCounter = 255;
-  if (key == CODED) {
 
+  if (isCapsLocked()) {
+    switch(keyCode) {
+    case UP:
+      rows++;
+      break;
+    case DOWN:
+      rows--;
+      break;
+    case RIGHT:
+      cols++;
+      break;
+    case LEFT:
+      cols--;
+      break;
+    }
+    initCells();
+  }
+  else if (key == CODED) {
     switch(keyCode) {
     case UP:
       speed --;
@@ -137,6 +188,18 @@ void keyPressed() {
       break;
     case 'u':
       isUnison = !isUnison;
+      break;
+    case ']':
+      fSize++;
+      break;
+    case '[':
+      fSize--;
+      break;
+    case 'k':
+      kern++;
+      break;
+    case 'j':
+      kern--;
       break;
     }
   }

@@ -1,21 +1,25 @@
 class Textscape {
-  Word [] words = new Word[cols*rows];
+  ArrayList<Word> words = new ArrayList<Word>();
   ArrayList<Word>after = new ArrayList<Word>();
   String [] text = new String [40];
 
   Textscape() {
     text = loadStrings("words.txt");
-    for (int w = 0; w < words.length; w++) {
-      int wIndex = int(w%text.length);
-      String word = text[wIndex];
-      words[w] = new Word(w, word, false);
-    }
+    loadWords();
   }
 
 
   void run() {
     track();
     display();
+  }
+
+  void loadWords() {
+    for (int w = 0; w < numCells; w++) {
+      int wIndex = int(w%text.length);
+      String word = text[wIndex];
+      words.add(new Word(w, word, false));
+    }
   }
 
   void track() {
@@ -41,16 +45,16 @@ class Textscape {
           //println("DIFF: " + diff);
 
           if (frameCount > 5 && diff > 5000) {
-            after.add(new Word(index, words[index].word, true));
+            after.add(new Word(index, words.get(index).word, true));
           }
         }
-        words[index].display();
+        words.get(index).display();
       }
     }
   }
 
   void blob(int index, int x, int y, float b, int interval) {
-    Word thisWord = words[index];
+    Word thisWord = words.get(index);
     if (b < 50 ) {
       thisWord.isBlob = true;
       if (isFading)

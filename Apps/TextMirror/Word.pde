@@ -1,6 +1,7 @@
 class Word {
   int index, x, y;
   String word;
+  String [] letters;
   float decay;
   boolean isBlob;
   float [] randomColor = new float [3];
@@ -8,6 +9,7 @@ class Word {
   Word(int _index, String _word, boolean _isBlob) {
     index = _index;
     word = _word;
+    characterize();
     isBlob = _isBlob;
 
     x = int(index%cols)*cellWidth;
@@ -28,6 +30,11 @@ class Word {
 
   void update(String _word) {
     word = _word;
+    characterize();
+  }
+  
+  void characterize() {
+     letters = word.split(""); 
   }
 
   void randomizeColor() {
@@ -52,7 +59,14 @@ class Word {
     }
     else
       fill(0, alpha);
-    text(word, x + 15, y+cellHeight/2);
+    
+    float newLeft = x+15;  
+    for(int l = 0; l < letters.length; l++) {
+      String thisLetter = letters[l];
+      float letterWidth = textWidth(thisLetter) + kern;
+      text(thisLetter, newLeft, y+cellHeight/2);
+      newLeft += letterWidth;
+    }
   }
 
   boolean isDead() {
