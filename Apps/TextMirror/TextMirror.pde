@@ -29,9 +29,8 @@ int cellWidth, cellHeight;
 
 
 // Effects
-boolean isGhosting = false;
 boolean isBlobbing = false;
-boolean isMoving = false;
+boolean isMoving = true;
 boolean isFading = false;
 boolean isUnison = true;
 
@@ -40,13 +39,20 @@ boolean isUnison = true;
 int speed = 1;
 
 // Font-size
-float fSize = 48;
+float fSize = 56;
 
 // Decay rate
-float dRate = 255;
+float dRate = 3;
 
 // Kerning
-int kern = 4;
+int kern = -1;
+
+// Static Grey
+int grey = 127;
+
+// Ripple Boundaries
+int rMin = 120;
+int rMax = 600;
 
 // Font
 PFont font;
@@ -96,6 +102,7 @@ void initCells() {
 }
 
 void draw() {
+  background(255);
   //println(frameRate);
   video.run();
   ts.run();
@@ -108,14 +115,16 @@ void feedback() {
   String [] messages = {
     "(b)lob: " + isBlobbing, 
     "(m)ove: " + isMoving, 
-    "(f)ade: " + isFading, 
-    "(u)nison: " + isUnison, 
     "(u-d)speed: " + 1000/speed, 
     "(l-r)decay: " + dRate, 
     "([-])font: " + fSize, 
-    "(j-k)kern: " + kern,
+    "(j-k)kern: " + kern, 
+    "(f-g)grey: " + grey,
+    "(e-r)rMax: " + rMax,
+    "(q-w)rMin: " + rMin,
+
     " ", 
-    "CAPS LOCK:",
+    "CAPS LOCK:", 
     "(l-r)cols: " + cols, 
     "(u-d)rows: " + rows,
   };
@@ -183,7 +192,7 @@ void keyPressed() {
       if (isMoving)
         isBlobbing = false;
       break;
-    case 'f':
+    case 'a':
       isFading = !isFading;
       break;
     case 'u':
@@ -201,7 +210,27 @@ void keyPressed() {
     case 'j':
       kern--;
       break;
+    case 'r':
+      rMax++;
+      break;
+    case 'e':
+      rMax--;
+      break;
+    case 'w':
+      rMin++;
+      break;
+    case 'q':
+      rMin--;
+      break;
+    case 'g':
+      grey++;
+      break;
+    case 'f':
+      grey--;
+      break;
     }
+    
+    grey = constrain(grey, 0, 255);
   }
 }
 

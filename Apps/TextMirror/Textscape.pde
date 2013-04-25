@@ -1,6 +1,6 @@
 class Textscape {
   ArrayList<Word> words = new ArrayList<Word>();
-  ArrayList<Word>after = new ArrayList<Word>();
+  ArrayList<Integer>after = new ArrayList<Integer>();
   String [] text = new String [40];
 
   Textscape() {
@@ -10,6 +10,8 @@ class Textscape {
 
 
   void run() {
+    if (frameCount%int(random(rMin, rMax)) == 0)
+      ripple();
     track();
     display();
   }
@@ -32,27 +34,37 @@ class Textscape {
         x = col*cellWidth;
         int index = (row*cols)+col;
         float bVideo = analyze(video.getCell(x, y, true));
+        Word thisWord = words.get(index);
 
         // Choose random interval for this cell
         if (!isUnison)
           interval = int(random(5, 20)*speed);
-
+        
         if (isBlobbing)
           blob(index, x, y, bVideo, interval);
-
+          
+        
+          
         if (isMoving) {
           float diff = diff(video.getCell(x, y, true), video.getCell(x, y, false));
           //println("DIFF: " + diff);
 
           if (frameCount > 5 && diff > 5000) {
-            after.add(new Word(index, words.get(index).word, true));
+            after.add(index);
+            thisWord.isBlob = true;
           }
         }
-        words.get(index).display();
+        thisWord.display();
       }
     }
   }
 
+  void ripple() {
+    int randomIndex = int(random(words.size()));
+    after.add(randomIndex);
+    words.get(randomIndex).isBlob = true;
+  }
+  
   void blob(int index, int x, int y, float b, int interval) {
     Word thisWord = words.get(index);
     if (b < 50 ) {
@@ -72,18 +84,22 @@ class Textscape {
   }
 
   void display() {
-    for (int i = after.size()-1; i > 0; i--) {
-      Word thisWord = after.get(i);
+    for (int i = after.size()-1; i >= 0; i--) {
+      int thisIndex = after.get(i);
+      Word thisWord = words.get(thisIndex);
       //println("DECAY: " + thisWord.decay());
       thisWord.decay();
-      if (frameCount%int(sin(i*.1)*10 + 11) == 0) {
-        thisWord.randomizeColor();
-        thisWord.update(text[int(random(text.length-1))]);
-      }
-      thisWord.display();
       if (thisWord.isDead()) {
-        println("DIE!");
         after.remove(i);
+      }
+      else {
+        //println("MOVING: " + thisIndex);
+        if (frameCount%int(sin(i*.1)*10 + 11) == 0) {
+          thisWord.randomizeColor();
+          thisWord.update(text[int(random(text.length-1))]);
+          thisWord.isBlob = true;
+        }
+        thisWord.display();
       }
     }
   }

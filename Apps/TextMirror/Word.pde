@@ -11,6 +11,8 @@ class Word {
     word = _word;
     characterize();
     isBlob = _isBlob;
+    
+    randomizeColor();
 
     x = int(index%cols)*cellWidth;
     y = int(index/cols)*cellHeight;
@@ -52,13 +54,13 @@ class Word {
     float alpha = 255;
 
     if (isFading)
-      alpha = decay;
+      alpha = map(decay, 0, dRate, 0, 255);
 
     if (isBlob) {
       fill(randomColor[0], randomColor[1], randomColor[2], alpha);
     }
     else
-      fill(0, alpha);
+      fill(grey, alpha);
     
     float newLeft = x+15;  
     for(int l = 0; l < letters.length; l++) {
@@ -70,7 +72,9 @@ class Word {
   }
 
   boolean isDead() {
-    if (decay < random(-120*dRate, 0)) { 
+    if (decay < 0) { 
+      println("DIE!!!: " + index + "\tDECAY: " + decay);
+      isBlob = false;
       decay = dRate;
       return true;
     }
