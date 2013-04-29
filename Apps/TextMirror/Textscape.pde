@@ -1,6 +1,7 @@
 class Textscape {
   ArrayList<Word> words = new ArrayList<Word>();
   ArrayList<Integer>after = new ArrayList<Integer>();
+  ArrayList<Integer>ripple = new ArrayList<Integer>();
   String [] text = new String [40];
 
   Textscape() {
@@ -39,12 +40,12 @@ class Textscape {
         // Choose random interval for this cell
         if (!isUnison)
           interval = int(random(5, 20)*speed);
-        
+
         if (isBlobbing)
           blob(index, x, y, bVideo, interval);
-          
-        
-          
+
+
+
         if (isMoving) {
           float diff = diff(video.getCell(x, y, true), video.getCell(x, y, false));
           //println("DIFF: " + diff);
@@ -61,10 +62,25 @@ class Textscape {
 
   void ripple() {
     int randomIndex = int(random(words.size()));
-    after.add(randomIndex);
-    words.get(randomIndex).isBlob = true;
+    ripple.add(randomIndex);
+    for (int i = ripple.size()-1; i >= 0; i--) {
+      int thisIndex = ripple.get(i);
+      Word thisWord = words.get(thisIndex);
+      //println("DECAY: " + thisWord.decay());
+      thisWord.decay();
+      if (thisWord.isDead()) {
+        ripple.remove(i);
+      }
+      else {
+        //println("MOVING: " + thisIndex);
+        if (frameCount%int(sin(i*.1)*10 + 11) == 0) {
+          thisWord.update(text[int(random(text.length-1))]);
+        }
+        thisWord.display();
+      }
+    }
   }
-  
+
   void blob(int index, int x, int y, float b, int interval) {
     Word thisWord = words.get(index);
     if (b < 50 ) {
@@ -85,7 +101,7 @@ class Textscape {
 
   void display() {
     for (int i = after.size()-1; i >= 0; i--) {
-      int thisIndex = after.get(i);
+      int thisIndex = (int) after.get(i);
       Word thisWord = words.get(thisIndex);
       //println("DECAY: " + thisWord.decay());
       thisWord.decay();
@@ -93,6 +109,7 @@ class Textscape {
         after.remove(i);
       }
       else {
+        println(thisIndex + " is ALIVE!!!");
         //println("MOVING: " + thisIndex);
         if (frameCount%int(sin(i*.1)*10 + 11) == 0) {
           thisWord.randomizeColor();

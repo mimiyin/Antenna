@@ -66,8 +66,8 @@ float fCounter;
 
 
 void setup() {
-  size(1920, 1080);
-  //size(1280, 720);
+  //size(1920, 1080);
+  size(1280, 720);
 
   // Load color palette
   colorStrings = loadStrings("colors.txt");
