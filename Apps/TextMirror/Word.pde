@@ -25,11 +25,6 @@ class Word {
     decay--;
   }
 
-  void recay() {
-    decay += 100/frameRate; 
-    decay = constrain(decay, 0, 255);
-  }
-
   void update(String _word) {
     word = _word;
     characterize();
@@ -53,9 +48,6 @@ class Word {
 
     float alpha = 255;
 
-    if (isFading)
-      alpha = map(decay, 0, dRate, 0, 255);
-
     if (isBlob) {
       fill(randomColor[0], randomColor[1], randomColor[2], alpha);
     }
@@ -73,7 +65,7 @@ class Word {
 
   boolean isDead() {
     if (decay < 0) { 
-      println("DIE!!!: " + index + "\tDECAY: " + decay);
+      //println("DIE!!!: " + index + "\tDECAY: " + decay);
       isBlob = false;
       decay = dRate;
       return true;

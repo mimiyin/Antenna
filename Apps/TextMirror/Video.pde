@@ -10,14 +10,16 @@ class Video {
   // How different must a pixel be to be a "motion" pixel
   float threshold = 50;
   // Video is 1/10th output of screen
-  float scale = .1;
+  float scaleX = .1;
+  float scaleY = .1;
 
   PApplet parent;
 
 
   Video(PApplet p) {
     parent = p;
-    capture = new Capture(parent, int(width*scale), int(height*scale), 30);
+    Capture.list();
+    capture = new Capture(parent, int(width*scaleX), int(height*scaleY), 30);
     capture.start();
 
     // Create an empty image the same size as the video
@@ -41,9 +43,9 @@ class Video {
 
   PImage getCell(int x, int y, boolean isCurrent) {
     if(isCurrent)
-      return capture.get(int(scale*width-(scale*(x+cellWidth))), int(scale*y), int(scale*cellWidth), int(scale*cellHeight));
+      return capture.get(int(scaleX*width-(scaleX*(x+cellWidth))), int(scaleY*y), int(scaleX*cellWidth), int(scaleY*cellHeight));
     else
-      return prevFrame.get(int(scale*width-(scale*(x+cellWidth))), int(scale*y), int(scale*cellWidth), int(scale*cellHeight));
+      return prevFrame.get(int(scaleX*width-(scaleX*(x+cellWidth))), int(scaleY*y), int(scaleX*cellWidth), int(scaleY*cellHeight));
   }
 }
 

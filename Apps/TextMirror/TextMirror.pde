@@ -29,10 +29,7 @@ int cellWidth, cellHeight;
 
 
 // Effects
-boolean isBlobbing = false;
 boolean isMoving = true;
-boolean isFading = false;
-boolean isUnison = true;
 
 
 // Rate of change for cycling through words
@@ -42,17 +39,17 @@ int speed = 1;
 float fSize = 56;
 
 // Decay rate
-float dRate = 3;
+float dRate = 15;
 
 // Kerning
 int kern = -1;
 
 // Static Grey
-int grey = 127;
+int grey = 160;
 
 // Ripple Boundaries
-int rMin = 120;
-int rMax = 600;
+int rMin = 72;
+int rMax = 120;
 
 // Font
 PFont font;
@@ -66,11 +63,13 @@ float fCounter;
 
 
 void setup() {
-  //size(1920, 1080);
+  size(1920, 1080);
   size(1280, 720);
+  
+  
 
   // Load color palette
-  colorStrings = loadStrings("colors.txt");
+  colorStrings = loadStrings("colorsAnt.txt");
   colors = new Color [colorStrings.length];
 
   for (int i = 0; i < colorStrings.length; i++) {
@@ -113,9 +112,8 @@ void draw() {
 
 void feedback() {
   String [] messages = {
-    "(b)lob: " + isBlobbing, 
     "(m)ove: " + isMoving, 
-    "(u-d)speed: " + 1000/speed, 
+    "(u-d)speed: " + 100/speed, 
     "(l-r)decay: " + dRate, 
     "([-])font: " + fSize, 
     "(j-k)kern: " + kern, 
@@ -166,11 +164,11 @@ void keyPressed() {
     switch(keyCode) {
     case UP:
       speed --;
-      speed = constrain(speed, 1, 100);
+      speed = constrain(speed, 1, 1000);
       break;
     case DOWN:
       speed ++;
-      speed = constrain(speed, 1, 100);
+      speed = constrain(speed, 1, 1000);
       break;
     case RIGHT:
       dRate += 1;
@@ -182,21 +180,8 @@ void keyPressed() {
   }
   else {
     switch(key) {
-    case 'b':  
-      isBlobbing = !isBlobbing; 
-      if (isBlobbing)
-        isMoving = false;
-      break;
     case 'm':
       isMoving = !isMoving;
-      if (isMoving)
-        isBlobbing = false;
-      break;
-    case 'a':
-      isFading = !isFading;
-      break;
-    case 'u':
-      isUnison = !isUnison;
       break;
     case ']':
       fSize++;

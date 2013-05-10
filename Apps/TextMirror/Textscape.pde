@@ -27,7 +27,6 @@ class Textscape {
 
   void track() {
     int y, x;
-    int interval = speed; 
 
     for (int row = 0; row < rows; row++) {
       y = row*cellHeight;
@@ -36,15 +35,6 @@ class Textscape {
         int index = (row*cols)+col;
         float bVideo = analyze(video.getCell(x, y, true));
         Word thisWord = words.get(index);
-
-        // Choose random interval for this cell
-        if (!isUnison)
-          interval = int(random(5, 20)*speed);
-
-        if (isBlobbing)
-          blob(index, x, y, bVideo, interval);
-
-
 
         if (isMoving) {
           float diff = diff(video.getCell(x, y, true), video.getCell(x, y, false));
@@ -60,46 +50,38 @@ class Textscape {
     }
   }
 
+  // Pick random word to flip in stillness
   void ripple() {
     int randomIndex = int(random(words.size()));
     ripple.add(randomIndex);
+    Word thisWord = words.get(randomIndex);
+    thisWord.decay = dRate*2;
+  }
+
+  void display() {
+
+    // Display the ripple words
     for (int i = ripple.size()-1; i >= 0; i--) {
       int thisIndex = ripple.get(i);
       Word thisWord = words.get(thisIndex);
-      //println("DECAY: " + thisWord.decay());
+      //println("RIPPLING");
+      //println("DECAY: " + thisWord.decay);
       thisWord.decay();
       if (thisWord.isDead()) {
+        thisWord.isBlob = false;
+        thisWord.decay = dRate;
+        //println(thisWord.word + "\t" + thisWord.isBlob);
         ripple.remove(i);
       }
       else {
-        //println("MOVING: " + thisIndex);
-        if (frameCount%int(sin(i*.1)*10 + 11) == 0) {
-          thisWord.update(text[int(random(text.length-1))]);
+        if (frameCount%int(random(10, 20)*speed) == 0) {
+          randomizeWord(thisWord);
         }
         thisWord.display();
       }
     }
-  }
 
-  void blob(int index, int x, int y, float b, int interval) {
-    Word thisWord = words.get(index);
-    if (b < 50 ) {
-      thisWord.isBlob = true;
-      if (isFading)
-        thisWord.decay();
-
-      if (frameCount%interval == 0) {
-        thisWord.randomizeColor();
-        thisWord.update(text[int(random(text.length-1))]);
-      }
-    }
-    else {
-      thisWord.isBlob = false;
-      thisWord.recay();
-    }
-  }
-
-  void display() {
+    // Display the blobbed words
     for (int i = after.size()-1; i >= 0; i--) {
       int thisIndex = (int) after.get(i);
       Word thisWord = words.get(thisIndex);
@@ -109,16 +91,23 @@ class Textscape {
         after.remove(i);
       }
       else {
-        println(thisIndex + " is ALIVE!!!");
+        //println(thisIndex + " is ALIVE!!!");
         //println("MOVING: " + thisIndex);
-        if (frameCount%int(sin(i*.1)*10 + 11) == 0) {
-          thisWord.randomizeColor();
-          thisWord.update(text[int(random(text.length-1))]);
-          thisWord.isBlob = true;
+        if (frameCount%int(random(10, 20)*speed) == 0) {
+          randomizeWord(thisWord);
         }
         thisWord.display();
       }
     }
+  }
+
+  // Change the color
+  // Change the words
+  // Turn on blobbing
+  void randomizeWord(Word word) {
+    word.randomizeColor();
+    word.update(text[int(random(text.length-1))]);
+    word.isBlob = true;
   }
 }
 
